@@ -1,0 +1,32 @@
+html, body {
+  height: 100%; }
+
+.container-fluid, .row {
+  height: 100%;
+  padding: 0; }
+
+.col-controls {
+  height: 100%;
+  padding: 0;
+  border-right: solid 1em #067BB3; }
+
+.controls {
+  padding: 2em; }
+
+.col-map {
+  height: 100%;
+  background-color: #ddd;
+  padding: 0; }
+
+.map-holder {
+  height: 100%;
+  padding: 0px; }
+
+.map-canvas {
+  height: 100%; }
+
+.map-control {
+  position: absolute;
+  margin-top: 2em;
+  min-width: 300px;
+  width: 40%; }

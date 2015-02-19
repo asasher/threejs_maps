@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Maps</title>	
+	<link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" type="text/css" href="styles/app.css">
+</head>
+<body>
+
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-4 col-controls">
+				<div class="controls">
+					<form>
+						<div class="form-group">
+							<div class="input-group">
+						    <div class="input-group-addon">from</div>
+						    <input type="datetime-local" class="form-control" name="from-datetime">
+						    </div>							
+						</div>
+						<div class="form-group">
+							<div class="input-group">
+						    <div class="input-group-addon">to</div>
+						    <input type="datetime-local" class="form-control" name="to-datetime">
+						    </div>							
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="col-md-8 col-map">
+				<div class="map-holder">
+					<input name='map-input' class="form-control map-control" placeholder="Search"></input>
+					<div class="map-canvas"></div>		
+				</div>
+			</div>
+		</div>
+	</div>	
+	
+
+	<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>	
+	<script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="bower_components/d3/d3.min.js"></script>
+	<script type="text/javascript" src="bower_components/three.js/three.min.js"></script>
+	<script type="text/javascript" src="bower_components/randomcolor/randomColor.js"></script>
+
+	<script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?libraries=places,visualization&key=AIzaSyD3Jn-bBrowY1713IpqVkuOi7XToPeMakY"></script>	
+
+	<script type="text/javascript" src="scripts/threejs-layer.js"></script>     
+
+	<script type="text/javascript" src="scripts/app.js"></script>
+</body>
+</html>

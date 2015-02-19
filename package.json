@@ -1,0 +1,13 @@
+{
+  	"name": "three_maps",
+    "version": "0.0.0",
+    "devDependencies": {
+        "gulp": "latest",        
+        "gulp-util" : "latest",
+        "gulp-load-plugins" : "latest",        
+        "gulp-ruby-sass": "latest",        
+        "gulp-autoprefixer" : "latest",
+        "browser-sync" : "latest",
+        "del" : "latest"
+    }
+}

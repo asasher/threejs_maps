@@ -1,0 +1,46 @@
+$padding-controls: 2em;
+$color-border-controls: #067BB3;
+
+html, body {
+	height: 100%;
+}
+
+.container-fluid, .row {
+	height: 100%;
+	padding: 0;
+}
+
+.col-controls {	
+	height: 100%;	
+	padding: 0;
+	border-right: solid 1em $color-border-controls;
+}
+
+.controls {
+	padding: $padding-controls;
+}
+
+.col-map {
+	height: 100%;
+	background-color: #ddd;
+	padding: 0;
+}
+
+.map-holder {	
+	height: 100%;
+	padding: 0px;	
+}
+
+.map-canvas {
+	height: 100%;
+}
+
+.map-control
+{
+	position: absolute;
+
+	margin-top: $padding-controls;
+
+	min-width: 300px;
+	width: 40%;
+}

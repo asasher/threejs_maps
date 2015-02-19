@@ -1,0 +1,4 @@
+/app/bower_components
+/.sass-cache
+/node_modules
+.fuse_hidden*
