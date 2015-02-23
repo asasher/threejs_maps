@@ -1,5 +1,5 @@
 /**
- * Copyright 2012 Asher Anjum
+ * Copyright 2015 Asher Anjum
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,17 +24,82 @@
  */
 function Utils() { }
 
+
+/**
+ * namespace for all string related utilities
+ * @type {Object}
+ */
+Utils.String = {}
+
 /**
  * checks whether given argument is null or has length = 0
  * @param  {String|Array}  can be any object that has length method.
  * @return {Boolean}
  */
-Utils.prototype.isNullOrEmpty = function(arr) {
+Utils.String.isNullOrEmpty = function(arr) {
 	return (!arr || arr.length == 0);
 }
 
-Utils.prototype.hyphenate = function(str) {
+/**
+ * hyphenates a given cameCase string
+ * @param  {String} str camelCase string
+ * @return {String}     hyphenated string
+ */
+Utils.String.hyphenate = function(str) {
 	return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 }
 
+/**
+ * namespace for javascript related utilities
+ * @type {Object}
+ */
+Utils.JS = {};
+
+/**
+ * binds all methods in given instace to given thisArg
+ * @param  {Object} thisArg thisArg to bind to 
+ * @param  {Object} intance instance to be bound
+ */
+Utils.JS.bindAll = function(thisArg, intance){
+	for(var props in instace) {
+		if(typeof props == 'function') {
+			instace[props] = instace[props].bind(thisArg);
+		}
+	}
+};
+
+/**
+ * namespace for HTML related utilities
+ * @type {Object}
+ */
+Utils.HTML = {};
+
+/**
+ * return true if webg is supported
+ * @return {Boolean}
+ */
+Utils.HTML.hasWebGL = function() {
+	try {
+      var canvas = document.createElement('canvas');
+      return !!window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
+    } catch (e) {
+      return false;
+    }
+}
+
+/**
+ * namespace for Number related utilites
+ * @type {Object}
+ */
+Utils.Number = {};
+
+/**
+ * returns a random number between lower (inclusive) and upper (exclusive)
+ * @param  {number} lower
+ * @param  {number} upper
+ * @return {number}
+ */
+Utils.Number.random = function(lower, upper) {
+	return (upper - lower)*Math.random() + lower;
+}
 

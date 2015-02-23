@@ -10,69 +10,151 @@
 	var files = {};
 
 	var $controls = $('.controls');
-	var controls = {};
+	var controls = {
+		fromDatetime: null,
+		toDatetime: null,
+		textTest: '',
+		checkboxTest: false,
+		selectTest: []
+	};
+
+	var oo;
 
 	var $mapCanvas = $('.map-canvas');
 	var $mapInput = $('[name="map-input"]');
-	var map, markers, threejsLayer;
+	var map, threejsLayer, markers = [];
 
-	(function init() {
-		initControls();
-		initMap($mapCanvas.get(0), $mapInput.get(0));
-	})();	
+	initControls();
+	initMap($mapCanvas.get(0), $mapInput.get(0));
+	createPointCloud([]);
 
 	function update() {
 		console.log(controls);
 	}
 
 	function initControls() {
-		$controls.on('change', 'input, select', function () {
-			$elem = $(this);
-			name = $.camelCase($elem.attr('name'));
-			type = $elem.attr('type');
+		oo = new Oo('.controls', controls, update);		
+	}
 
-			if(type == 'datetime-local') {
-				var val = $elem.val();
-				if(!isEmpty(val)) {
-					controls[name] = new Date($elem.val());
-				} else {
-					controls[name] = null;
+	function createPointCloud(latlngs) {
+		var geometry = new THREE.Geometry(),
+			texture = new THREE.Texture(generateSprite(64)),
+			material = new THREE.PointCloudMaterial({
+				size: 32,
+				map: texture,
+				opacity: 0.3,
+				blending: THREE.AdditiveBlending,
+				depthTest: false,
+				transparent: true
+			}), 
+			particles;
+
+		threejsLayer = new ThreeJSLayer({
+			map: map,
+			onReady: function() {
+				for(var i = 0; i < 1000; i++) {
+					var lat = Utils.Number.random(31.5,31.6);
+					var lng = Utils.Number.random(74.3,74.4);
+					var location = new google.maps.LatLng(lat, lng),
+					vertex = threejsLayer.fromLatLngToVertex(location);
+					geometry.vertices.push( vertex );
+				}	
+
+				texture.needsUpdate = true;
+
+				particles = new THREE.PointCloud( geometry, material );
+				particles.dynamic = true;
+
+				threejsLayer.add(particles);
+			},
+			onUpdate: function() {
+				for(var i = 0; i < particles.geometry.vertices.length; i++) {					
+					particles.geometry.vertices[i].x += Utils.Number.random(-1.0,1.0);
+					particles.geometry.vertices[i].y += Utils.Number.random(-1.0,1.0);
 				}
-				
-			}
-			else if(type == 'text') {
-				controls[name] = $elem.val();
-			}
-			else if(type == 'checkbox')
-			{
-				controls[name] = $elem.is(":checked");
-			}
-			else if($elem.is('select'))
-			{
-				controls[name] = [];
-				$elem.find(":selected").each(function (index, opt) {
-					var val = $(opt).val();
-					if(!isEmpty(val))
-					{
-						controls[name].push(val);
-					}                    
-                });
-			}			
+				particles.geometry.verticesNeedUpdate = true;
+			},
+			animate: true
+		});	
+	}
 
-			update();			
+	function generateSprite(size) {
+		var canvas = document.createElement('canvas'),
+			context = canvas.getContext('2d'),
+			gradient;
+
+		size = size || 32;
+		canvas.width = size;
+		canvas.height = size;
+
+		gradient = context.createRadialGradient(
+		  canvas.width / 2, canvas.height / 2, 0,
+		  canvas.width / 2, canvas.height / 2, canvas.width / 2
+		);
+
+		gradient.addColorStop(1.0, 'rgba(255,255,255,0)');
+		gradient.addColorStop(0.0, 'rgba(255,255,255,1)');
+
+		context.fillStyle = gradient;
+		context.fillRect(0, 0, canvas.width, canvas.height);
+
+		return canvas;
+	}
+
+	function clearMarkers() {
+		for(var i = 0; i < markers.length; i++) {
+			markers[i].setMap(null);
+		}
+		markers = [];
+	}
+
+	function drawMarker(latlng) {
+		var color = '#f00';
+		var marker = new google.maps.Marker({
+			position: latlng,
+			icon: {
+		      path: google.maps.SymbolPath.CIRCLE,
+		      strokeColor: color,
+		      strokeWeight: 1,
+		      fillColor: color,
+		      fillOpacity: 1,
+		      scale: 2
+		    },
+			map: map
 		});
-
-		$controls.find('input, select').each(function(index, elem) {
-			$(elem).trigger("change");
-		})
+		markers.push(marker);
 	}
 
 	function initMap(mapCanvas, mapInput) {
+		var styles = [
+		  {
+		    "stylers": [
+		      { "invert_lightness": true },
+		      { "saturation": -100 },
+		      { "visibility": "on" }
+		    ]
+		  },
+		  {
+		    "featureType": "landscape",
+		    "stylers": [
+		      { "color": "#000000" }
+		    ]
+		  },
+		  {
+		    "featureType": "administrative.country",
+		    "elementType": "geometry",
+		    "stylers": [
+		      { "visibility": "on" }
+		    ]
+		  }
+		];
+
 		var mapOptions = {
-		    zoom: 13,
+		    zoom: 2,
 		    center: new google.maps.LatLng(31.5450500, 74.3406830),
-		    mapTypeId: google.maps.MapTypeId.ROADMAP
-		    /*mapTypeId: google.maps.MapTypeId.SATELLITE*/		    
+		    mapTypeControl: false,
+		    mapTypeId: google.maps.MapTypeId.ROADMAP,
+		    styles: styles
 		};
 
 		map = new google.maps.Map(mapCanvas, mapOptions);
@@ -124,13 +206,6 @@
 		    searchBox.setBounds(bounds);
 		});
       	//-------------------------------------------------------------------------
-	}
-
-	function clearMarkers() {
-		for(var marker in markers) {
-			marker.setMap(null);
-		}
-		markers = [];
 	}
 
 	function isEmpty(str) {
