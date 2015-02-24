@@ -29,6 +29,7 @@
 
 
 // TODO
+// - add getByName and removeByName functions
 // - alignment issues on too much zoom out or pan
 
 /**
@@ -426,14 +427,14 @@ ThreeJSLayer.prototype.scheduleUpdate = function() {
 		if (this.isAdded_ && !this.requestAnimationFrameId_) {
 		this.requestAnimationFrameId_ = requestAnimationFrame(this.requestUpdateFunction_);
 	}
-};
+}
 
 /**
  * @inheritDoc
  */
 ThreeJSLayer.prototype.draw = function() {
   this.repositionCanvas_();
-};
+}
 
 
 ThreeJSLayer.prototype.onAdd = function() {
@@ -483,9 +484,30 @@ ThreeJSLayer.prototype.onRemove = function() {
  * Shortcut method to add new geometry to the scene.
  * @param  {Geometry} geometry The Three.js geometry to add.
  */
-ThreeJSLayer.prototype.add = function(geometry){
+ThreeJSLayer.prototype.add = function(geometry) {
 	this.scene.add(geometry);
-};
+}
+
+/**
+ * Shortcut methods to remove geometry from scene
+ * @param  {Geometry} geometry the Three.js geometry to remove
+ */
+ThreeJSLayer.prototype.remove = function(geometry) {
+	this.scene.remove(geometry);
+}
+
+/**
+ * Removes all objects from scene that are not a camera
+ */
+ThreeJSLayer.prototype.clear = function() {
+	var obj, i;
+	for ( i = this.scene.children.length - 1; i >= 0 ; i -- ) {
+	    obj = this.scene.children[ i ];
+	    if (obj !== this.camera) {
+	        this.scene.remove(obj);
+	    }
+	}
+}
 
 /**
  * Helper method to convert for LatLng to vertex.
@@ -503,4 +525,68 @@ ThreeJSLayer.prototype.fromLatLngToVertex = function(latLng) {
 	vertex.z = 0;
 
 	return vertex;
-};
+}
+
+/**
+ * Creates a point cloud from the given latlngs and color.
+ * @param  {Array} latlngs [[lat,lng], ...]
+ * @param  {String} color   color in hexadecimal
+ * @return {THREE.PointCloud} the PointCloud object
+ */
+ThreeJSLayer.prototype.createPointCloud = function(latlngs, color) {
+	var geometry = new THREE.Geometry(),
+		material = new THREE.PointCloudMaterial({
+			color: color,
+			size: 32,
+			opacity: 0.3,
+			blending: THREE.AdditiveBlending,
+			depthTest: false,
+			transparent: true
+		}), 
+		particles;
+
+	for(var i = 0; i < latlngs.length; i++) {
+		var latlng = latlngs[i];
+		var location = new google.maps.LatLng(latlng[0], latlng[1]),
+		vertex = this.fromLatLngToVertex(location);
+		geometry.vertices.push( vertex );
+	}	
+
+	particles = new THREE.PointCloud( geometry, material );
+
+	this.add(particles);
+
+	return particles;
+}
+
+/**
+ * Creates a line from given latlngs
+ * @param  {Array} latlngs [[lat,lng], ...]
+ * @param  {[type]} color  color in hexadecimal
+ * @return {THREE.Line}    the Line object
+ */
+ThreeJSLayer.prototype.createLine = function(latlngs, color) {
+	var geometry = new THREE.Geometry(),
+		material = new THREE.LineBasicMaterial({
+			color: color,
+			linewidth: 3,
+			opacity: 0.3,
+			blending: THREE.AdditiveBlending,
+			depthTest: false,
+			transparent: true
+		}), 
+		line;
+
+	for(var i = 0; i < latlngs.length; i++) {
+		var latlng = latlngs[i];
+		var location = new google.maps.LatLng(latlng[0], latlng[1]),
+		vertex = this.fromLatLngToVertex(location);
+		geometry.vertices.push( vertex );
+	}	
+
+	line = new THREE.Line( geometry, material );	
+
+	this.add(line);
+
+	return line;
+}

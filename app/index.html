@@ -13,32 +13,44 @@
 			<div class="col-md-4 col-controls">
 				<div class="controls">
 					<form>
-						<div class="form-group">
-							<input type="text" class="form-control" name="text-test" placeholder="test">
+						<div class="checkbox">
+							<label>
+						    	<input name="show-sources" type="checkbox"> Show Sources
+						    </label>
 						</div>
-						<label class="checkbox-inline">
-						  <input type="checkbox" name="checkbox-test" value="option1" checked> test
-						</label>						
+						<div class="checkbox">
+							<label>
+						    	<input name="show-destinations" type="checkbox"> Show Destinations
+						    </label>
+						</div>
+						<div class="checkbox">
+							<label>
+						    	<input name="show-routes" type="checkbox"> Show Routes
+						    </label>
+						</div>						
 						<div class="form-group">
+							<label for="">Filter By Date</label>
 							<div class="input-group">
-						    <div class="input-group-addon">from</div>
-						    <input type="datetime-local" class="form-control" name="from-datetime">
+							    <div class="input-group-addon">From</div>
+							    <input type="date" class="form-control" name="from-date">
+						    </div>		
+						    <div class="small-padding"></div>
+						    <div class="input-group">
+							    <div class="input-group-addon">To</div>
+							    <input type="date" class="form-control" name="to-datetime">
 						    </div>							
 						</div>
 						<div class="form-group">
+							<label for="">Filter By Time of Day</label>
 							<div class="input-group">
-						    <div class="input-group-addon">to</div>
-						    <input type="datetime-local" class="form-control" name="to-datetime">
+							    <div class="input-group-addon">From</div>
+							    <input type="time" class="form-control" name="from-time-of-day">
+						    </div>						
+						    <div class="small-padding"></div>
+						    <div class="input-group">
+							    <div class="input-group-addon">To</div>
+							    <input type="time" class="form-control" name="to-time-of-day">
 						    </div>							
-						</div>
-						<div class="form-group">
-							<select name='select-test' multiple class="form-control">
-							  <option selected="">1</option>
-							  <option>2</option>
-							  <option selected="">3</option>
-							  <option>4</option>
-							  <option>5</option>
-							</select>							
 						</div>						
 					</form>
 				</div>
@@ -62,8 +74,8 @@
 	<script type="text/javascript"
       src="https://maps.googleapis.com/maps/api/js?libraries=places,visualization&key=AIzaSyD3Jn-bBrowY1713IpqVkuOi7XToPeMakY"></script>
 
-	<script type="text/javascript" src="scripts/utils.js"></script>
-	<script type="text/javascript" src="scripts/oo.js"></script>
+	<script type="text/javascript" src="scripts/Utils.js"></script>
+	<script type="text/javascript" src="scripts/Oo.js"></script>
 	<script type="text/javascript" src="scripts/ThreeJSLayer.js"></script>
 	<script type="text/javascript" src="scripts/app.js"></script>
 </body>

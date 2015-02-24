@@ -39,7 +39,7 @@ function Oo(containerSelector, obj, callback) {
 	 * @type {function}
 	 * @private
 	 */
-	this.afterDomChanged_ = callback;
+	this.afterDOMChanged_ = callback;
 
 	/**
 	 * reference to this.domChanged_ bound to this instance
@@ -56,11 +56,11 @@ function Oo(containerSelector, obj, callback) {
 	this.updateObjectFunction_ = this.updateObject_.bind(this);
 
 	/**
-	 * reference to this.getAllDomValues_ bound to this instance
+	 * reference to this.getAllDOMValues_ bound to this instance
 	 * @type {function}
 	 * @private
 	 */
-	this.getAllDomValuesFunction_ = this.getAllDomValues_.bind(this);
+	this.getAllDOMValuesFunction_ = this.getAllDOMValues_.bind(this);
 
 	/**
 	 * Element for container
@@ -71,14 +71,14 @@ function Oo(containerSelector, obj, callback) {
 
 	this.domContainer_.addEventListener('change', this.domChangedFunction_);
 
-	this.getAllDomValues_();
+	this.getAllDOMValues_();
 }
 
 
 /**
  * updates all the fields in obj_ to dom values
  */
-Oo.prototype.getAllDomValues_ = function() {	
+Oo.prototype.getAllDOMValues_ = function() {	
 	for(var key in this.obj_) {
 		var selector = '[name="' + Utils.String.hyphenate(key) + '"]';
 		var elem = this.domContainer_.querySelector(selector);
@@ -102,7 +102,7 @@ Oo.prototype.domChanged_ = function(e) {
 			}
 		}
 	}
-	this.afterDomChanged_();
+	this.afterDOMChanged_();
 }
 
 /**
@@ -122,6 +122,14 @@ Oo.prototype.updateObject_ = function(key, elem) {
 		} else {
 			this.obj_[key] = null;
 		}				
+	}
+	else if(type == 'time') {
+		var val = elem.value;
+		if(!Utils.String.isNullOrEmpty(val)) {
+			this.obj_[key] = new Date(new Date().toDateString() + ' ' + val);
+		} else {
+			this.obj_[key] = null;
+		}
 	}
 	else if(type == 'text') {
 		var val = elem.value;

@@ -7,15 +7,19 @@
 		data : 'data/'
 	};
 
-	var files = {};
+	var files = {
+		routes : 'routes.txt'
+	};
 
 	var $controls = $('.controls');
 	var controls = {
-		fromDatetime: null,
-		toDatetime: null,
-		textTest: '',
-		checkboxTest: false,
-		selectTest: []
+		fromDate: null,
+		toDate: null,
+		fromTimeOfDay: null,
+		toTimeOfDay: null,
+		showSources: false,
+		showDestinations: false,
+		showRoutes: false
 	};
 
 	var oo;
@@ -23,13 +27,30 @@
 	var $mapCanvas = $('.map-canvas');
 	var $mapInput = $('[name="map-input"]');
 	var map, threejsLayer, markers = [];
+	var data = null;
 
 	initControls();
 	initMap($mapCanvas.get(0), $mapInput.get(0));
-	createPointCloud([]);
+	getData(files.routes, function(result) {
+		data = result;
+	});
 
 	function update() {
 		console.log(controls);
+		if(data) {
+
+		}
+	}
+
+	function getData(file, callback) {
+		$.getJSON(file, function(result) {
+			console.log('got ' + file);			
+			callback(result);
+			update();
+		}).fail(function( jqxhr, textStatus, error ) {
+		    var err = textStatus + ', ' + error;
+		    console.log('failed: ' + err );
+		});
 	}
 
 	function initControls() {
@@ -37,35 +58,18 @@
 	}
 
 	function createPointCloud(latlngs) {
-		var geometry = new THREE.Geometry(),
-			texture = new THREE.Texture(generateSprite(64)),
-			material = new THREE.PointCloudMaterial({
-				size: 32,
-				map: texture,
-				opacity: 0.3,
-				blending: THREE.AdditiveBlending,
-				depthTest: false,
-				transparent: true
-			}), 
-			particles;
+		var particles;
+
+		var latlngs = [];
+		for(var i = 0; i < 100000; i++) {
+			var latlng = [Utils.Number.random(31.5,31.6), Utils.Number.random(74.3,74.4)];
+			latlngs.push(latlng);
+		}
 
 		threejsLayer = new ThreeJSLayer({
 			map: map,
 			onReady: function() {
-				for(var i = 0; i < 1000; i++) {
-					var lat = Utils.Number.random(31.5,31.6);
-					var lng = Utils.Number.random(74.3,74.4);
-					var location = new google.maps.LatLng(lat, lng),
-					vertex = threejsLayer.fromLatLngToVertex(location);
-					geometry.vertices.push( vertex );
-				}	
-
-				texture.needsUpdate = true;
-
-				particles = new THREE.PointCloud( geometry, material );
-				particles.dynamic = true;
-
-				threejsLayer.add(particles);
+				particles = threejsLayer.createLine(latlngs,0xff0000);
 			},
 			onUpdate: function() {
 				for(var i = 0; i < particles.geometry.vertices.length; i++) {					
@@ -76,29 +80,11 @@
 			},
 			animate: true
 		});	
-	}
 
-	function generateSprite(size) {
-		var canvas = document.createElement('canvas'),
-			context = canvas.getContext('2d'),
-			gradient;
-
-		size = size || 32;
-		canvas.width = size;
-		canvas.height = size;
-
-		gradient = context.createRadialGradient(
-		  canvas.width / 2, canvas.height / 2, 0,
-		  canvas.width / 2, canvas.height / 2, canvas.width / 2
-		);
-
-		gradient.addColorStop(1.0, 'rgba(255,255,255,0)');
-		gradient.addColorStop(0.0, 'rgba(255,255,255,1)');
-
-		context.fillStyle = gradient;
-		context.fillRect(0, 0, canvas.width, canvas.height);
-
-		return canvas;
+		setTimeout(function() {
+			threejsLayer.remove(particles);
+			particles = threejsLayer.createLine(latlngs,0x00ff00);
+		},3000);
 	}
 
 	function clearMarkers() {
@@ -133,7 +119,7 @@
 		      { "saturation": -100 },
 		      { "visibility": "on" }
 		    ]
-		  },
+		 	   },
 		  {
 		    "featureType": "landscape",
 		    "stylers": [
@@ -150,7 +136,7 @@
 		];
 
 		var mapOptions = {
-		    zoom: 2,
+		    zoom: 6,
 		    center: new google.maps.LatLng(31.5450500, 74.3406830),
 		    mapTypeControl: false,
 		    mapTypeId: google.maps.MapTypeId.ROADMAP,

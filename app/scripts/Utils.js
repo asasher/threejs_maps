@@ -102,4 +102,3 @@ Utils.Number = {};
 Utils.Number.random = function(lower, upper) {
 	return (upper - lower)*Math.random() + lower;
 }
-
