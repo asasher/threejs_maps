@@ -6,9 +6,13 @@ html, body {
   padding: 0; }
 
 .col-controls {
-  height: 100%;
   padding: 0;
-  border-right: solid 1em #067BB3; }
+  border-bottom: solid 1em #067BB3; }
+  @media (min-width: 992px) {
+    .col-controls {
+      height: 100%;
+      border-bottom: none;
+      border-right: solid 1em #067BB3; } }
 
 .controls {
   padding: 2em; }

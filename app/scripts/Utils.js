@@ -102,3 +102,46 @@ Utils.Number = {};
 Utils.Number.random = function(lower, upper) {
 	return (upper - lower)*Math.random() + lower;
 }
+
+
+/**
+ * namespace to DateTime related utils
+ * @type {Object}
+ */
+Utils.DateTime = {};
+
+/**
+ * Compares time portion of two given dates. 
+ * Return -1 if date1 < date2, 1 if date1 > date2, 0 otherwise.
+ * @param  {Date} date1
+ * @param  {Date} date2
+ * @return {int}
+ */
+Utils.DateTime.compareTime = function(date1, date2) {
+	var datePart = date1.toDateString();
+	var d1 = new Date(datePart + ' ' + date1.getHours() + ':' + date1.getMinutes() + ':' + date1.getSeconds());
+	var d2 = new Date(datePart + ' ' + date2.getHours() + ':' + date2.getMinutes() + ':' + date2.getSeconds());
+	if(d1 < d2) {
+		return -1;
+	} else if(d1 > d2) {
+		return 1;
+	} else {
+		return 0;
+	}
+}
+
+/**
+ * namespace for color related utilities
+ * @type {Object}
+ */
+Utils.Color = {};
+
+/**
+ * converts a color string like #rrggbb to int
+ * @param  {String} color in formate #rrggbb
+ * @return {int}
+ */
+Utils.Color.toHex = function(color) {
+	color = '0x' + color.slice(1, color.length);
+	return parseInt(color);
+}

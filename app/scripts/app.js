@@ -8,7 +8,7 @@
 	};
 
 	var files = {
-		routes : 'routes.txt'
+		routes : paths.data + 'routes.txt'
 	};
 
 	var $controls = $('.controls');
@@ -34,6 +34,7 @@
 	getData(files.routes, function(result) {
 		data = result;
 	});
+	createPointCloud([]);
 
 	function update() {
 		console.log(controls);
@@ -61,7 +62,7 @@
 		var particles;
 
 		var latlngs = [];
-		for(var i = 0; i < 100000; i++) {
+		for(var i = 0; i < 1000; i++) {
 			var latlng = [Utils.Number.random(31.5,31.6), Utils.Number.random(74.3,74.4)];
 			latlngs.push(latlng);
 		}
@@ -81,9 +82,9 @@
 			animate: true
 		});	
 
-		setTimeout(function() {
+		setInterval(function() {
 			threejsLayer.remove(particles);
-			particles = threejsLayer.createLine(latlngs,0x00ff00);
+			particles = threejsLayer.createLine(latlngs,Utils.Color.toHex(randomColor()));
 		},3000);
 	}
 

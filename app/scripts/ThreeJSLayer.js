@@ -367,6 +367,8 @@ ThreeJSLayer.prototype.repositionCanvas_ = function() {
 		var layerProjection = this.getProjection();
 		var point = layerProjection.fromLatLngToDivPixel(topLeft);
 		this.canvas.style[ThreeJSLayer.CSS_TRANSFORM_] = 'translate(' + Math.round(point.x) + 'px,' + Math.round(point.y) + 'px)';
+
+		this.resize_(); //fix canvas size
 		
 		var mapProjection = map.getProjection();
 		var point = mapProjection.fromLatLngToPoint(topLeft);
@@ -538,8 +540,8 @@ ThreeJSLayer.prototype.createPointCloud = function(latlngs, color) {
 		material = new THREE.PointCloudMaterial({
 			color: color,
 			size: 32,
-			opacity: 0.3,
-			blending: THREE.AdditiveBlending,
+			opacity: 0.2,
+			blending: THREE.MultiplyBlending,
 			depthTest: false,
 			transparent: true
 		}), 
@@ -570,8 +572,7 @@ ThreeJSLayer.prototype.createLine = function(latlngs, color) {
 		material = new THREE.LineBasicMaterial({
 			color: color,
 			linewidth: 3,
-			opacity: 0.3,
-			blending: THREE.AdditiveBlending,
+			opacity: 0.2,
 			depthTest: false,
 			transparent: true
 		}), 

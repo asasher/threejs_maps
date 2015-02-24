@@ -10,10 +10,14 @@ html, body {
 	padding: 0;
 }
 
-.col-controls {	
-	height: 100%;	
+.col-controls {		
 	padding: 0;
-	border-right: solid 1em $color-border-controls;
+	border-bottom: solid 1em $color-border-controls;
+	@media (min-width: 992px) {
+		height: 100%;	
+		border-bottom: none;
+		border-right: solid 1em $color-border-controls;
+	}	
 }
 
 .controls {
