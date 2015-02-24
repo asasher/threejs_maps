@@ -28,6 +28,7 @@
 	var $mapInput = $('[name="map-input"]');
 	var map, threejsLayer, markers = [];
 	var data = null;
+	var toPlot = null;
 
 	initControls();
 	initMap($mapCanvas.get(0), $mapInput.get(0));
@@ -37,21 +38,72 @@
 		data = result;		
 		update();
 	});
-	// createPointCloud([]);
 
 	function update() {
 		console.log(controls);
 		if(data && threejsLayer.isReady()) {
 			console.log('ready to draw');
 
-			var latlngs = [];
-			for(var i = 0; i < 1000; i++) {
-				var latlng = [Utils.Number.random(31.5,31.6), Utils.Number.random(74.3,74.4)];
-				latlngs.push(latlng);
+			threejsLayer.clear();
+
+			toPlot = data;
+			C = d3.scale.linear()
+				  .domain([3, 15])
+				  .interpolate(d3.interpolateRgb)
+				  .range(["#ffffff", "#ff0000"]);	
+
+			if(controls.fromDate) {
+				toPlot = $.grep(toPlot, function(elem, i) {
+					var date = new Date(elem.date);
+					return date >= controls.fromDate;
+				});
 			}
 
-			threejsLayer.createLine(latlngs,0xff0000);
-			threejsLayer.createPointCloud(latlngs,0xffffff);
+			if(controls.toDate) {
+				toPlot = $.grep(toPlot, function(elem, i) {
+					var date = new Date(elem.date);
+					return date <= controls.toDate;
+				});
+			}
+
+			if(controls.fromTimeOfDay) {
+				toPlot = $.grep(toPlot, function(elem, i) {
+					var date = new Date(elem.date + elem.time);
+					return Utils.DateTime.compareTime(date, controls.fromTimeOfDay) == 1;
+				});
+			}
+
+			if(controls.toTimeOfDay) {
+				toPlot = $.grep(toPlot, function(elem, i) {
+					var date = new Date(elem.date + elem.time);
+					return Utils.DateTime.compareTime(date, controls.toTimeOfDay) == -1;
+				});
+			}
+
+			if(controls.showSources) {
+				for(var i = 0; i < toPlot.length; i++) {
+					elem = toPlot[i];					
+					var color = C(elem.responsetime);
+					threejsLayer.createPointCloud([elem.src],color);
+				}
+			}
+
+			if(controls.showDestinations) {
+				for(var i = 0; i < toPlot.length; i++) {
+					elem = toPlot[i];					
+					var color = C(elem.responsetime);
+					threejsLayer.createPointCloud([elem.dst],color);
+				}
+			}
+
+			if(controls.showRoutes) {
+				for(var i = 0; i < toPlot.length; i++) {
+					elem = toPlot[i];					
+					var color = C(elem.responsetime);
+					threejsLayer.createLine(elem.route,color);
+				}
+			}
+
 		}
 	}
 

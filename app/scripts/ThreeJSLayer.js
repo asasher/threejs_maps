@@ -404,7 +404,6 @@ ThreeJSLayer.prototype.repositionCanvas_ = function() {
  * @private
  */
 ThreeJSLayer.prototype.update_ = function() {
-	console.log("update");
 	this.requestAnimationFrameId_ = null;
 	if(this.isAdded_) {
 		if(this.isAnimated_) {
@@ -553,7 +552,6 @@ ThreeJSLayer.prototype.createPointCloud = function(latlngs, color) {
 			color: color,
 			size: 32,
 			opacity: 0.2,
-			blending: THREE.MultiplyBlending,
 			depthTest: false,
 			transparent: true
 		}), 
@@ -569,6 +567,8 @@ ThreeJSLayer.prototype.createPointCloud = function(latlngs, color) {
 	particles = new THREE.PointCloud( geometry, material );
 
 	this.add(particles);
+
+	this.scheduleUpdate();
 
 	return particles;
 }
@@ -600,6 +600,8 @@ ThreeJSLayer.prototype.createLine = function(latlngs, color) {
 	line = new THREE.Line( geometry, material );	
 
 	this.add(line);
+
+	this.scheduleUpdate();
 
 	return line;
 }
