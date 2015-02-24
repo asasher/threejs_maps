@@ -125,8 +125,10 @@ Utils.DateTime.compareTime = function(date1, date2) {
 		return -1;
 	} else if(d1 > d2) {
 		return 1;
-	} else {
+	} else if (d1 == d2) {
 		return 0;
+	} else {
+		console.error("invalid dates");
 	}
 }
 

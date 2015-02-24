@@ -68,14 +68,14 @@
 
 			if(controls.fromTimeOfDay) {
 				toPlot = $.grep(toPlot, function(elem, i) {
-					var date = new Date(elem.date + elem.time);
+					var date = new Date(elem.date + ' ' + elem.emtime);					
 					return Utils.DateTime.compareTime(date, controls.fromTimeOfDay) == 1;
 				});
 			}
 
 			if(controls.toTimeOfDay) {
 				toPlot = $.grep(toPlot, function(elem, i) {
-					var date = new Date(elem.date + elem.time);
+					var date = new Date(elem.date + ' ' + elem.emtime);
 					return Utils.DateTime.compareTime(date, controls.toTimeOfDay) == -1;
 				});
 			}
