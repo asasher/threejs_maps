@@ -302,6 +302,13 @@ ThreeJSLayer.prototype.setOnReady = function(onReady) {
 }
 
 /**
+ * @return {boolean} whether layer is ready i.e map has been initialized
+ */
+ThreeJSLayer.prototype.isReady = function() {
+	return this.isAdded_;
+}
+
+/**
  * Set the updateHandler for this layer this is called once every frame before rendering.
  * @param {function} onUpdate no args function
  */
@@ -397,6 +404,7 @@ ThreeJSLayer.prototype.repositionCanvas_ = function() {
  * @private
  */
 ThreeJSLayer.prototype.update_ = function() {
+	console.log("update");
 	this.requestAnimationFrameId_ = null;
 	if(this.isAdded_) {
 		if(this.isAnimated_) {
@@ -464,6 +472,7 @@ ThreeJSLayer.prototype.onRemove = function() {
 	if(this.isAdded_) {
 		this.isAdded_ = false;
 
+		this.clear();
 		this.canvas.parentElement.removeChild(this.canvas);
 
 		if (this.repositionListener_) {
@@ -476,7 +485,7 @@ ThreeJSLayer.prototype.onRemove = function() {
 		}
 
 		if(this.requestAnimationFrameId_) {
-			cancelAnimationFrame(this,requestAnimationFrameId_);
+			cancelAnimationFrame(this,this.requestAnimationFrameId_);
 			this.requestAnimationFrameId_ = null;
 		}
 	}
@@ -488,6 +497,7 @@ ThreeJSLayer.prototype.onRemove = function() {
  */
 ThreeJSLayer.prototype.add = function(geometry) {
 	this.scene.add(geometry);
+	this.scheduleUpdate();
 }
 
 /**
@@ -496,6 +506,7 @@ ThreeJSLayer.prototype.add = function(geometry) {
  */
 ThreeJSLayer.prototype.remove = function(geometry) {
 	this.scene.remove(geometry);
+	this.scheduleUpdate();
 }
 
 /**
@@ -509,6 +520,7 @@ ThreeJSLayer.prototype.clear = function() {
 	        this.scene.remove(obj);
 	    }
 	}
+	this.scheduleUpdate();
 }
 
 /**

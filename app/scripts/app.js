@@ -31,15 +31,27 @@
 
 	initControls();
 	initMap($mapCanvas.get(0), $mapInput.get(0));
+	initThreeJSLayer();
+
 	getData(files.routes, function(result) {
-		data = result;
+		data = result;		
+		update();
 	});
-	createPointCloud([]);
+	// createPointCloud([]);
 
 	function update() {
 		console.log(controls);
-		if(data) {
+		if(data && threejsLayer.isReady()) {
+			console.log('ready to draw');
 
+			var latlngs = [];
+			for(var i = 0; i < 1000; i++) {
+				var latlng = [Utils.Number.random(31.5,31.6), Utils.Number.random(74.3,74.4)];
+				latlngs.push(latlng);
+			}
+
+			threejsLayer.createLine(latlngs,0xff0000);
+			threejsLayer.createPointCloud(latlngs,0xffffff);
 		}
 	}
 
@@ -47,7 +59,6 @@
 		$.getJSON(file, function(result) {
 			console.log('got ' + file);			
 			callback(result);
-			update();
 		}).fail(function( jqxhr, textStatus, error ) {
 		    var err = textStatus + ', ' + error;
 		    console.log('failed: ' + err );
@@ -58,35 +69,37 @@
 		oo = new Oo('.controls', controls, update);		
 	}
 
-	function createPointCloud(latlngs) {
-		var particles;
+	// function createPointCloud(latlngs) {
+	// 	var particles;
 
-		var latlngs = [];
-		for(var i = 0; i < 1000; i++) {
-			var latlng = [Utils.Number.random(31.5,31.6), Utils.Number.random(74.3,74.4)];
-			latlngs.push(latlng);
-		}
+	// 	var latlngs = [];
+	// 	for(var i = 0; i < 1000; i++) {
+	// 		var latlng = [Utils.Number.random(31.5,31.6), Utils.Number.random(74.3,74.4)];
+	// 		latlngs.push(latlng);
+	// 	}
 
-		threejsLayer = new ThreeJSLayer({
-			map: map,
-			onReady: function() {
-				particles = threejsLayer.createLine(latlngs,0xff0000);
-			},
-			onUpdate: function() {
-				for(var i = 0; i < particles.geometry.vertices.length; i++) {					
-					particles.geometry.vertices[i].x += Utils.Number.random(-1.0,1.0);
-					particles.geometry.vertices[i].y += Utils.Number.random(-1.0,1.0);
-				}
-				particles.geometry.verticesNeedUpdate = true;
-			},
-			animate: true
-		});	
+	// 	threejsLayer = new ThreeJSLayer({
+	// 		map: map,
+	// 		onReady: function() {
+	// 			particles = threejsLayer.createLine(latlngs,0xff0000);
+	// 		},
+	// 		onUpdate: function() {
+	// 			for(var i = 0; i < particles.geometry.vertices.length; i++) {					
+	// 				particles.geometry.vertices[i].x += Utils.Number.random(-1.0,1.0);
+	// 				particles.geometry.vertices[i].y += Utils.Number.random(-1.0,1.0);
+	// 			}
+	// 			particles.geometry.verticesNeedUpdate = true;
+	// 		},
+	// 		animate: true
+	// 	});	
 
-		setInterval(function() {
-			threejsLayer.remove(particles);
-			particles = threejsLayer.createLine(latlngs,Utils.Color.toHex(randomColor()));
-		},3000);
-	}
+	// 	setInterval(function() {
+	// 		// threejsLayer.remove(particles);
+	// 		// particles = threejsLayer.createLine(latlngs,Utils.Color.toHex(randomColor()));
+			
+	// 		threejsLayer.setMap(null);
+	// 	},3000);
+	// }
 
 	function clearMarkers() {
 		for(var i = 0; i < markers.length; i++) {
@@ -110,6 +123,10 @@
 			map: map
 		});
 		markers.push(marker);
+	}
+
+	function initThreeJSLayer() {
+		threejsLayer = new ThreeJSLayer({ map: map, onReady: function() { update(); } });
 	}
 
 	function initMap(mapCanvas, mapInput) {
