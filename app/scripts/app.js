@@ -19,7 +19,8 @@
 		toTimeOfDay: null,
 		showSources: false,
 		showDestinations: false,
-		showRoutes: false
+		showRoutes: false,
+		emergencyTypes: []
 	};
 
 	var oo;
@@ -80,6 +81,12 @@
 				});
 			}
 
+			if(controls.emergencyTypes.length) {
+				toPlot = $.grep(toPlot, function(elem, i) {					
+					return $.inArray(elem.emtype.trim(), controls.emergencyTypes) > -1;
+				});
+			}
+
 			if(controls.showSources) {
 				for(var i = 0; i < toPlot.length; i++) {
 					elem = toPlot[i];					
@@ -119,6 +126,12 @@
 
 	function initControls() {
 		oo = new Oo('.controls', controls, update);		
+
+		$controls.on('click', '.dump-to-file', function() {
+			var $elem = $(this);
+			var blob = new Blob([JSON.stringify(toPlot)], {type: "text/plain;charset=utf-8"});
+			saveAs(blob, "data.txt");
+		});
 	}
 
 	// function createPointCloud(latlngs) {

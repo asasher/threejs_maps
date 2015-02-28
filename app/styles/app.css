@@ -38,3 +38,7 @@ html, body {
 .small-padding {
   padding: 0px;
   height: 0.6em; }
+
+.medium-padding {
+  padding: 0px;
+  height: 1.2em; }

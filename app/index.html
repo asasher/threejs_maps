@@ -27,7 +27,29 @@
 							<label>
 						    	<input name="show-routes" type="checkbox"> Show Routes
 						    </label>
-						</div>						
+						</div>	
+						<div class="formgroup">
+							<label for="">Filter By Emergency Types</label>
+							<select multiple name="emergency-types" class="form-control">
+								<option>Breathing</option>
+								<option>Building Collapse</option>
+								<option>Bullet Injury</option>
+								<option>Chest Pain & Heart Attack</option>
+								<option>Delivery</option>
+								<option>Electric Shock </option>
+								<option>Fall</option>
+								<option>Fire</option>
+								<option>Injurry</option>
+								<option>Medical Emergency</option>
+								<option>Other</option>
+								<option>Poisoning Case</option>
+								<option>RTA</option>
+								<option>Suicide</option>
+								<option>Unconcious</option>
+								<option>Violance</option>
+							</select>
+							<div class="medium-padding"></div>
+						</div>
 						<div class="form-group">
 							<label for="">Filter By Date</label>
 							<div class="input-group">
@@ -51,7 +73,10 @@
 							    <div class="input-group-addon">To</div>
 							    <input type="time" class="form-control" name="to-time-of-day">
 						    </div>							
-						</div>						
+						</div>		
+						<div class="form-group">
+							<a href="#" class="dump-to-file">Dump data to file...</a>
+						</div>				
 					</form>
 				</div>
 			</div>
@@ -73,7 +98,8 @@
 
 	<script type="text/javascript"
       src="https://maps.googleapis.com/maps/api/js?libraries=places,visualization&key=AIzaSyD3Jn-bBrowY1713IpqVkuOi7XToPeMakY"></script>
-
+	
+	<script type="text/javascript" src="scripts/FileSaver.min.js"></script>
 	<script type="text/javascript" src="scripts/Utils.js"></script>
 	<script type="text/javascript" src="scripts/Oo.js"></script>
 	<script type="text/javascript" src="scripts/ThreeJSLayer.js"></script>

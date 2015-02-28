@@ -2,3 +2,4 @@
 /.sass-cache
 /node_modules
 .fuse_hidden*
+/app/data
