@@ -8,7 +8,7 @@
 	};
 
 	var files = {
-		routes : paths.data + 'routes.txt'
+		routes : paths.data + 'data.json'
 	};
 
 	var $controls = $('.controls');
@@ -20,6 +20,8 @@
 		showSources: false,
 		showDestinations: false,
 		showRoutes: false,
+		showScatter: false,
+		showGrid: false,
 		emergencyTypes: []
 	};
 
@@ -29,7 +31,7 @@
 	var $mapInput = $('[name="map-input"]');
 	var map, threejsLayer, markers = [];
 	var data = null;
-	var toPlot = null;
+	var features = null;
 
 	initControls();
 	initMap($mapCanvas.get(0), $mapInput.get(0));
@@ -47,71 +49,85 @@
 
 			threejsLayer.clear();
 
-			toPlot = data;
+			features = data.features;
 			C = d3.scale.linear()
-				  .domain([3, 15])
+				  .domain([0, 1])
 				  .interpolate(d3.interpolateRgb)
 				  .range(["#ffffff", "#ff0000"]);	
 
 			if(controls.fromDate) {
-				toPlot = $.grep(toPlot, function(elem, i) {
-					var date = new Date(elem.date);
+				features = $.grep(features, function(elem, i) {
+					var date = new Date(elem.properties.date);
 					return date >= controls.fromDate;
 				});
 			}
 
 			if(controls.toDate) {
-				toPlot = $.grep(toPlot, function(elem, i) {
-					var date = new Date(elem.date);
+				features = $.grep(features, function(elem, i) {
+					var date = new Date(elem.properties.date);
 					return date <= controls.toDate;
 				});
 			}
 
 			if(controls.fromTimeOfDay) {
-				toPlot = $.grep(toPlot, function(elem, i) {
-					var date = new Date(elem.date + ' ' + elem.emtime);					
+				features = $.grep(features, function(elem, i) {
+					var date = new Date(elem.properties.date + ' ' + elem.properties.timeOfDay);
 					return Utils.DateTime.compareTime(date, controls.fromTimeOfDay) == 1;
 				});
 			}
 
 			if(controls.toTimeOfDay) {
-				toPlot = $.grep(toPlot, function(elem, i) {
-					var date = new Date(elem.date + ' ' + elem.emtime);
+				features = $.grep(features, function(elem, i) {
+					var date = new Date(elem.properties.date + ' ' + elem.properties.timeOfDay);
 					return Utils.DateTime.compareTime(date, controls.toTimeOfDay) == -1;
 				});
 			}
 
 			if(controls.emergencyTypes.length) {
-				toPlot = $.grep(toPlot, function(elem, i) {					
-					return $.inArray(elem.emtype.trim(), controls.emergencyTypes) > -1;
+				features = $.grep(features, function(elem, i) {
+					console.log(elem);
+					console.log(elem.properties.emergencyType);
+					return $.inArray(elem.properties.emergencyType, controls.emergencyTypes) > -1;
 				});
 			}
 
-			if(controls.showSources) {
-				for(var i = 0; i < toPlot.length; i++) {
-					elem = toPlot[i];					
-					var color = C(elem.responsetime);
-					threejsLayer.createPointCloud([elem.src],color);
+			for(var i = 0; i < features.length; i++) {
+				elem = features[i];					
+				var color = getFeatureColor(elem);
+				if(elem.geometry.type == 'Point') {
+					if(controls.showSources && elem.properties.pointType == 'source') {
+						threejsLayer.createPointCloud([elem.geometry.coordinates],color);
+					} else if(controls.showSources && elem.properties.pointType == 'destination') {
+						threejsLayer.createPointCloud([elem.geometry.coordinates],color);
+					}
+				} else if(elem.geometry.type == 'LineString') {
+					if(controls.showRoutes) {
+						threejsLayer.createLine(elem.geometry.coordinates,color);
+					}
+				} else if(elem.geometry.type == 'MultiPoint') {
+					if(controls.showScatter) {
+						threejsLayer.createPointCloud(elem.geometry.coordinates,color);
+					}
+
+				} else if(elem.geometry.type == 'Rectangle') {
+					if(controls.showGrid) {
+						threejsLayer.createRectangle(elem.geometry.coordinates,color);
+					}
 				}
 			}
-
-			if(controls.showDestinations) {
-				for(var i = 0; i < toPlot.length; i++) {
-					elem = toPlot[i];					
-					var color = C(elem.responsetime);
-					threejsLayer.createPointCloud([elem.dst],color);
-				}
-			}
-
-			if(controls.showRoutes) {
-				for(var i = 0; i < toPlot.length; i++) {
-					elem = toPlot[i];					
-					var color = C(elem.responsetime);
-					threejsLayer.createLine(elem.route,color);
-				}
-			}
-
 		}
+	}
+
+	function getFeatureColor(elem) {
+		var color = elem.properties.color;
+		if(typeof(color) === 'object') {
+			var C = d3.scale.linear()
+				  .domain([0, 1])
+				  .interpolate(d3.interpolateRgb)
+				  .range([color.min, color.max]);
+			color = C(color.value);
+		}
+		return color;
 	}
 
 	function getData(file, callback) {
@@ -129,42 +145,14 @@
 
 		$controls.on('click', '.dump-to-file', function() {
 			var $elem = $(this);
-			var blob = new Blob([JSON.stringify(toPlot)], {type: "text/plain;charset=utf-8"});
-			saveAs(blob, "data.txt");
+			var output = {
+				"type" : "FeatureCollection",
+				"features" : features
+			}
+			var blob = new Blob([JSON.stringify(output)], {type: "text/plain;charset=utf-8"});
+			saveAs(blob, "dump.json");
 		});
 	}
-
-	// function createPointCloud(latlngs) {
-	// 	var particles;
-
-	// 	var latlngs = [];
-	// 	for(var i = 0; i < 1000; i++) {
-	// 		var latlng = [Utils.Number.random(31.5,31.6), Utils.Number.random(74.3,74.4)];
-	// 		latlngs.push(latlng);
-	// 	}
-
-	// 	threejsLayer = new ThreeJSLayer({
-	// 		map: map,
-	// 		onReady: function() {
-	// 			particles = threejsLayer.createLine(latlngs,0xff0000);
-	// 		},
-	// 		onUpdate: function() {
-	// 			for(var i = 0; i < particles.geometry.vertices.length; i++) {					
-	// 				particles.geometry.vertices[i].x += Utils.Number.random(-1.0,1.0);
-	// 				particles.geometry.vertices[i].y += Utils.Number.random(-1.0,1.0);
-	// 			}
-	// 			particles.geometry.verticesNeedUpdate = true;
-	// 		},
-	// 		animate: true
-	// 	});	
-
-	// 	setInterval(function() {
-	// 		// threejsLayer.remove(particles);
-	// 		// particles = threejsLayer.createLine(latlngs,Utils.Color.toHex(randomColor()));
-			
-	// 		threejsLayer.setMap(null);
-	// 	},3000);
-	// }
 
 	function clearMarkers() {
 		for(var i = 0; i < markers.length; i++) {

@@ -605,3 +605,45 @@ ThreeJSLayer.prototype.createLine = function(latlngs, color) {
 
 	return line;
 }
+
+/**
+ * Creates a rectangle from given latlngs
+ * @param  {Array} latlngs [[lat,lng], ...]
+ * @param  {[type]} color  color in hexadecimal
+ * @return {THREE.Line}    the Line object
+ */
+ThreeJSLayer.prototype.createRectangle = function(latlngs, color) {
+	console.log(color);
+
+	var	material = new THREE.MeshBasicMaterial({
+		color: color,
+		opacity: 0.2,
+		depthTest: false,
+		transparent: true,
+		side: THREE.DoubleSide
+	});
+
+	var vertices = [];
+	for(var i = 0; i < latlngs.length; i++) {
+		var latlng = latlngs[i];
+		var location = new google.maps.LatLng(latlng[0], latlng[1]),
+		vertex = this.fromLatLngToVertex(location);
+		vertices.push( vertex );
+	}
+
+	var rectShape = new THREE.Shape();
+	rectShape.moveTo( vertices[0].x, vertices[0].y );
+	rectShape.lineTo( vertices[1].x, vertices[0].y );
+	rectShape.lineTo( vertices[1].x, vertices[1].y );
+	rectShape.lineTo( vertices[0].x, vertices[1].y );
+	rectShape.lineTo( vertices[0].x, vertices[0].y );
+
+	var geometry = new THREE.ShapeGeometry(rectShape);
+	var rect = new THREE.Mesh( geometry, material );		
+
+	this.add(rect);
+
+	this.scheduleUpdate();
+	
+	return rect;
+}
