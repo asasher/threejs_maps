@@ -97,7 +97,7 @@
 					
 				} else if(elem.geometry.type == 'LineString') {
 					if(controls.showSources) {
-						threejsLayer.createPointCloud(elem.geometry.coordinates.slice(0,0),color);
+						threejsLayer.createPointCloud(elem.geometry.coordinates.slice(0,1),color);
 					}
 					if(controls.showDestinations) {
 						threejsLayer.createPointCloud(elem.geometry.coordinates.slice(-1),color);
