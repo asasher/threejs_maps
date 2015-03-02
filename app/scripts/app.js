@@ -8,7 +8,7 @@
 	};
 
 	var files = {
-		routes : paths.data + 'sample.json'
+		routes : paths.data + 'data.json'
 	};
 
 	var $controls = $('.controls');
@@ -85,8 +85,6 @@
 
 			if(controls.emergencyTypes.length) {
 				features = $.grep(features, function(elem, i) {
-					console.log(elem);
-					console.log(elem.properties.emergencyType);
 					return $.inArray(elem.properties.emergencyType, controls.emergencyTypes) > -1;
 				});
 			}
