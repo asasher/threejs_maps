@@ -95,12 +95,15 @@
 				elem = features[i];					
 				var color = getFeatureColor(elem);
 				if(elem.geometry.type == 'Point') {
-					if(controls.showSources && elem.properties.pointType == 'source') {
-						threejsLayer.createPointCloud([elem.geometry.coordinates],color);
-					} else if(controls.showSources && elem.properties.pointType == 'destination') {
-						threejsLayer.createPointCloud([elem.geometry.coordinates],color);
-					}
+					threejsLayer.createPointCloud([elem.geometry.coordinates],color);
+					
 				} else if(elem.geometry.type == 'LineString') {
+					if(controls.showSources) {
+						threejsLayer.createPointCloud(elem.geometry.coordinates.slice(0,0),color);
+					}
+					if(controls.showDestinations) {
+						threejsLayer.createPointCloud(elem.geometry.coordinates.slice(-1),color);
+					}
 					if(controls.showRoutes) {
 						threejsLayer.createLine(elem.geometry.coordinates,color);
 					}
