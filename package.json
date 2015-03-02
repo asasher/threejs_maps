@@ -5,7 +5,7 @@
         "gulp": "latest",        
         "gulp-util" : "latest",
         "gulp-load-plugins" : "latest",        
-        "gulp-ruby-sass": "latest",        
+        "gulp-sass": "latest",
         "gulp-autoprefixer" : "latest",
         "browser-sync" : "latest",
         "del" : "latest"

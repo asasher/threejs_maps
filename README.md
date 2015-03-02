@@ -1,4 +1,5 @@
 #### Initial Setup
+You will need the latest version of nodejs.
 Run the following commands after downloading from project root dir:
 ```bash 
 npm install -g gulp bower

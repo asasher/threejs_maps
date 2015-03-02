@@ -8,7 +8,7 @@
 	};
 
 	var files = {
-		routes : paths.data + 'data.json'
+		routes : paths.data + 'sample.json'
 	};
 
 	var $controls = $('.controls');

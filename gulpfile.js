@@ -30,11 +30,13 @@ var logMsg = function (msg) {
 
 //styles
 gulp.task('styles' , function () {
-	plugins.rubySass(paths.styles, {'sourcemap=none': true}).on('error', function (err) {
-    	logErr(err);
- 	})
- 	.pipe(plugins.autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
- 	.pipe(gulp.dest(paths.styles));
+	return gulp.src(paths.styles)
+            .pipe(plugins.sass({
+              precision: 10,
+              onError: logErr
+            }))
+            .pipe(plugins.autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
+            .pipe(gulp.dest(paths.styles));	
 });
 
 //clean
