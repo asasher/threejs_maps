@@ -1,4 +1,14 @@
 #### Initial Setup
+Run the '''init ''' script in the project root dir.
+This script will install nvm, node and other required node and bower packages.
+Make sure you don't have node already installed, if you have do the setup manually.
+This will only work on ubuntu.
+
+**This is still untested.**
+
+---
+
+Alternately you can just do stuff manually:
 You will need the latest version of nodejs.
 Run the following commands after downloading from project root dir:
 ```bash 
@@ -6,7 +16,6 @@ npm install -g gulp bower
 npm install
 bower install
 ```
-You may also need to install latest version of ruby and sass.
 
 #### How To Use
 Get the data in the format specified below. Ans save the file as data.json in data/ dir. Run the following command to launch the app.

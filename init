@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+# bash script to install node and do basic setup.
+# node is installed via nvm.
+# assumes curl is installed
+
+#installs nvm
+curl https://raw.githubusercontent.com/creationix/nvm/v0.23.3/install.sh | bash
+
+#installs latest stable version of nodejs
+nvm install stable
+
+#sets stable version as default version
+nvm alias default stable
+
+#set other bashrc options
+'#nvm specific settings' >> ~/.bashrc
+'[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"  # This loads nvm bash completion' >> ~/.bashrc
+'alias node="$NVM_BIN/node"' >> ~/.bashrc
+'alias npm="$NVM_BIN/npm"' >> ~/.bashrc
+
+#enabling node in sudo
+'#enable aliases in sudo' >> ~/.bashrc
+"alias sudo='sudo '" >> ~/.bashrc
+
+#reload bashrc
+. ~/.bashrc
+
+#install gulp and bower globally
+npm install -g gulp bower
+
+#install app specific node packages
+npm install
+bower install
+
+echo 'all done.'
+echo 'see README for further instructions.'
