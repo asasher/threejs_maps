@@ -23,6 +23,10 @@ Get the data in the format specified below. Ans save the file as data.json in da
 gulp serve
 ```
 
+#### Scrips
+There is a `routes_to_geojson.py` script in `scipts/`
+This script changes a some csv format to GeoJson. Duplicate and modify this script to convert from other formats to GeoJson given below.
+
 #### Data Format
 Data format is GeoJson. Currently the filters are implemented for the below mentioned properties only. Every feature is expected to have all the listed properties.
 ```javascript
