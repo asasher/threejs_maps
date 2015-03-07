@@ -1,5 +1,5 @@
 #### Initial Setup
-Run the '''init ''' script in the project root dir.
+Run the `./init` in the project root dir.
 This script will install nvm, node and other required node and bower packages.
 Make sure you don't have node already installed, if you have do the setup manually.
 This will only work on ubuntu.

@@ -52,7 +52,7 @@
 			features = data.features;
 			C = d3.scale.linear()
 				  .domain([0, 1])
-				  .interpolate(d3.interpolateRgb)
+				  .interpolate(d3.interpolateHsl)
 				  .range(["#ffffff", "#ff0000"]);	
 
 			if(controls.fromDate) {
@@ -184,35 +184,35 @@
 	}
 
 	function initMap(mapCanvas, mapInput) {
-		var styles = [
-		  {
-		    "stylers": [
-		      { "invert_lightness": true },
-		      { "saturation": -100 },
-		      { "visibility": "on" }
-		    ]
-		 	   },
-		  {
-		    "featureType": "landscape",
-		    "stylers": [
-		      { "color": "#000000" }
-		    ]
-		  },
-		  {
-		    "featureType": "administrative.country",
-		    "elementType": "geometry",
-		    "stylers": [
-		      { "visibility": "on" }
-		    ]
-		  }
-		];
+		// var styles = [
+		//   {
+		//     "stylers": [
+		//       { "invert_lightness": true },
+		//       { "saturation": -100 },
+		//       { "visibility": "on" }
+		//     ]
+		//  	   },
+		//   {
+		//     "featureType": "landscape",
+		//     "stylers": [
+		//       { "color": "#000000" }
+		//     ]
+		//   },
+		//   {
+		//     "featureType": "administrative.country",
+		//     "elementType": "geometry",
+		//     "stylers": [
+		//       { "visibility": "on" }
+		//     ]
+		//   }
+		// ];
 
 		var mapOptions = {
 		    zoom: 6,
 		    center: new google.maps.LatLng(31.5450500, 74.3406830),
 		    mapTypeControl: false,
 		    mapTypeId: google.maps.MapTypeId.ROADMAP,
-		    styles: styles
+		    // styles: styles
 		};
 
 		map = new google.maps.Map(mapCanvas, mapOptions);
